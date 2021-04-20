@@ -6,7 +6,6 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
 import messages from './messages';
-import AppConfigFormDivider from '../shared/AppConfigFormDivider';
 
 function LtiConfigForm({
   appConfig, app, onSubmit, intl, formRef, title,
@@ -33,11 +32,10 @@ function LtiConfigForm({
   const isInvalidLaunchUrl = touched.launchUrl && errors.launchUrl;
 
   return (
-    <Card className="mb-5 pt-3 px-5 pb-5" data-testid="ltiConfigForm">
+    <Card className="mb-5 p-4" data-testid="ltiConfigForm">
       <Form ref={formRef} onSubmit={handleSubmit}>
-        <h3>{title}</h3>
-        <AppConfigFormDivider />
-        <p>
+        <h3 className="mb-3">{title}</h3>
+        <p style={{ marginBottom: '2rem' }}>
           <FormattedMessage
             id="authoring.discussions.appDocInstructions"
             defaultMessage="{documentationPageLink} to set up the tool, then paste your consumer key and consumer secret below:"
@@ -58,39 +56,42 @@ function LtiConfigForm({
         <Form.Group controlId="consumerKey" isInvalid={isInvalidConsumerKey}>
           <Form.Label>{intl.formatMessage(messages.consumerKey)}</Form.Label>
           <Form.Control
+            floatingLabel={intl.formatMessage(messages.consumerKey)}
             onChange={handleChange}
             onBlur={handleBlur}
             value={values.consumerKey}
           />
           {isInvalidConsumerKey && (
-          <Form.Control.Feedback type="invalid">
-            {errors.consumerKey}
+          <Form.Control.Feedback type="invalid" hasIcon="false">
+            <small>{errors.consumerKey}</small>
           </Form.Control.Feedback>
           )}
         </Form.Group>
         <Form.Group controlId="consumerSecret" isInvalid={isInvalidConsumerSecret}>
           <Form.Label>{intl.formatMessage(messages.consumerSecret)}</Form.Label>
           <Form.Control
+            floatingLabel={intl.formatMessage(messages.consumerSecret)}
             onChange={handleChange}
             onBlur={handleBlur}
             value={values.consumerSecret}
           />
           {isInvalidConsumerSecret && (
-          <Form.Control.Feedback type="invalid">
-            {errors.consumerSecret}
+          <Form.Control.Feedback type="invalid" hasIcon="false">
+            <small>{errors.consumerSecret}</small>
           </Form.Control.Feedback>
           )}
         </Form.Group>
         <Form.Group controlId="launchUrl" isInvalid={isInvalidLaunchUrl}>
           <Form.Label>{intl.formatMessage(messages.launchUrl)}</Form.Label>
           <Form.Control
+            floatingLabel={intl.formatMessage(messages.launchUrl)}
             onChange={handleChange}
             onBlur={handleBlur}
             value={values.launchUrl}
           />
           {isInvalidLaunchUrl && (
           <Form.Control.Feedback type="invalid">
-            {errors.launchUrl}
+            <small>{errors.launchUrl}</small>
           </Form.Control.Feedback>
           )}
         </Form.Group>
