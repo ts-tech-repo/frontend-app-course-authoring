@@ -53,48 +53,41 @@ function LtiConfigForm({
             }}
           />
         </p>
-        <Form.Group controlId="consumerKey" isInvalid={errors.consumerKey} className="mb-4">
+        <Form.Group controlId="consumerKey" isInvalid={isInvalidConsumerKey} className="mb-4">
           <Form.Control
-            className="text-gray-500"
-            controlClassName={errors.consumerKey && 'border-danger-300'}
             floatingLabel={intl.formatMessage(messages.consumerKey)}
             onChange={handleChange}
             onBlur={handleBlur}
             value={values.consumerKey}
           />
-          {errors.consumerKey && (
-          <Form.Control.Feedback type="invalid" hasIcon={false} className="text-brand-500">
+          {isInvalidConsumerKey && (
+          <Form.Control.Feedback type="invalid" hasIcon={false}>
             <small>{errors.consumerKey}</small>
           </Form.Control.Feedback>
           )}
         </Form.Group>
-        <Form.Group controlId="consumerSecret" isInvalid={errors.consumerSecret} className="mb-4">
+        <Form.Group controlId="consumerSecret" isInvalid={isInvalidConsumerSecret} className="mb-4">
           <Form.Control
-            className="text-gray-500"
-            controlClassName={errors.consumerSecret && 'border-danger-300'}
             floatingLabel={intl.formatMessage(messages.consumerSecret)}
             onChange={handleChange}
             onBlur={handleBlur}
             value={values.consumerSecret}
           />
-          {errors.consumerSecret && (
-          <Form.Control.Feedback type="invalid" hasIcon={false} className="text-brand-500">
+          {isInvalidConsumerSecret && (
+          <Form.Control.Feedback type="invalid" hasIcon={false}>
             <small>{errors.consumerSecret}</small>
           </Form.Control.Feedback>
           )}
         </Form.Group>
         <Form.Group controlId="launchUrl" isInvalid={isInvalidLaunchUrl}>
-          <Form.Label>{intl.formatMessage(messages.launchUrl)}</Form.Label>
           <Form.Control
-            className="text-gray-500"
-            controlClassName={errors.launchUrl && 'border-danger-300'}
             floatingLabel={intl.formatMessage(messages.launchUrl)}
             onChange={handleChange}
             onBlur={handleBlur}
             value={values.launchUrl}
           />
-          {errors.launchUrl && (
-          <Form.Control.Feedback type="invalid" hasIcon={false} className="text-brand-500">
+          {isInvalidLaunchUrl && (
+          <Form.Control.Feedback type="invalid" hasIcon={false}>
             <small>{errors.launchUrl}</small>
           </Form.Control.Feedback>
           )}
