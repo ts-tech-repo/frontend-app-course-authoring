@@ -12,7 +12,7 @@ const messages = defineMessages({
   },
   consumerKeyRequired: {
     id: 'authoring.discussions.consumerKey.required',
-    defaultMessage: 'Enter your consumer key',
+    defaultMessage: 'Consumer key is a required field',
     description: 'Tells the user that the Consumer Key field is required and must have a value.',
   },
   consumerSecret: {
@@ -22,7 +22,7 @@ const messages = defineMessages({
   },
   consumerSecretRequired: {
     id: 'authoring.discussions.consumerSecret.required',
-    defaultMessage: 'Enter your consumer secret',
+    defaultMessage: 'Consumer secret is a required field',
     description: 'Tells the user that the Consumer Secret field is required and must have a value.',
   },
   launchUrl: {
@@ -32,7 +32,7 @@ const messages = defineMessages({
   },
   launchUrlRequired: {
     id: 'authoring.discussions.launchUrl.required',
-    defaultMessage: 'Enter your launch URL',
+    defaultMessage: 'Launch URL is a required field',
     description: 'Tells the user that the Launch URL field is required and must have a value.',
   },
 });

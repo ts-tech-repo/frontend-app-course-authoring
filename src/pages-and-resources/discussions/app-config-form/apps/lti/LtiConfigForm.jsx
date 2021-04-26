@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl, intlShape } from '@edx/frontend-platform/i18n';
 import { Card, Form, Hyperlink } from '@edx/paragon';
@@ -8,7 +8,7 @@ import * as Yup from 'yup';
 import messages from './messages';
 
 function LtiConfigForm({
-  appConfig, app, onSubmit, intl, formRef, title,
+  appConfig, app, onSubmit, intl, formRef, title, handleConfigError,
 }) {
   const {
     handleSubmit,
@@ -17,6 +17,7 @@ function LtiConfigForm({
     values,
     touched,
     errors,
+    validateForm,
   } = useFormik({
     initialValues: appConfig,
     validationSchema: Yup.object().shape({
@@ -31,9 +32,23 @@ function LtiConfigForm({
   const isInvalidConsumerSecret = touched.consumerSecret && errors.consumerSecret;
   const isInvalidLaunchUrl = touched.launchUrl && errors.launchUrl;
 
+  const handleValidation = (event) => {
+    event.preventDefault();
+    validateForm().then(() => {
+      handleConfigError(true);
+      handleSubmit();
+    });
+  };
+
+  useEffect(() => {
+    if (Object.keys(errors).length) {
+      handleConfigError(true);
+    } else { handleConfigError(false); }
+  }, [errors]);
+
   return (
     <Card className="mb-5 p-4" data-testid="ltiConfigForm">
-      <Form ref={formRef} onSubmit={handleSubmit}>
+      <Form ref={formRef} onSubmit={handleValidation}>
         <h3 className="mb-3">{title}</h3>
         <p className="mb-4">
           <FormattedMessage
@@ -109,6 +124,7 @@ LtiConfigForm.propTypes = {
   }),
   intl: intlShape.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  handleConfigError: PropTypes.func.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   formRef: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,

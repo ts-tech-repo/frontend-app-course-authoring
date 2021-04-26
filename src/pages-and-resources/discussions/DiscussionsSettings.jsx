@@ -38,6 +38,7 @@ function DiscussionsSettings({ courseId, intl }) {
 
   const discussionsPath = `${pagesAndResourcesPath}/discussions`;
   const { params: { appId } } = useRouteMatch();
+  const [hasError, setHasError] = useState(false);
 
   const startStep = appId ? SETTINGS_STEP : SELECTION_STEP;
   const [currentStep, setCurrentStep] = useState(startStep);
@@ -80,6 +81,10 @@ function DiscussionsSettings({ courseId, intl }) {
     );
   }
 
+  const handleConfigError = useCallback((isValid) => {
+    setHasError(isValid);
+  }, []);
+
   return (
     <DiscussionsProvider path={discussionsPath}>
       <AppConfigForm.Provider>
@@ -119,9 +124,12 @@ function DiscussionsSettings({ courseId, intl }) {
             <Stepper.Step
               eventKey={SETTINGS_STEP}
               title={intl.formatMessage(messages.settings)}
+              description={hasError && 'Incomplete'}
+              hasError={hasError}
             >
               <AppConfigForm
                 courseId={courseId}
+                handleConfigError={handleConfigError}
               />
             </Stepper.Step>
           </FullscreenModal>
