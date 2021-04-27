@@ -41,9 +41,7 @@ function LtiConfigForm({
   };
 
   useEffect(() => {
-    if (Object.keys(errors).length) {
-      handleConfigError(true);
-    } else { handleConfigError(false); }
+    handleConfigError(Object.keys(errors).length > 0);
   }, [errors]);
 
   return (
