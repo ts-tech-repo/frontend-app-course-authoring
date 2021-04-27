@@ -81,9 +81,9 @@ function DiscussionsSettings({ courseId, intl }) {
     );
   }
 
-  const handleConfigError = useCallback((isValid) => {
+  const handleConfigError = (isValid) => {
     setHasError(isValid);
-  }, []);
+  };
 
   return (
     <DiscussionsProvider path={discussionsPath}>
@@ -124,7 +124,7 @@ function DiscussionsSettings({ courseId, intl }) {
             <Stepper.Step
               eventKey={SETTINGS_STEP}
               title={intl.formatMessage(messages.settings)}
-              description={hasError && 'Incomplete'}
+              description={hasError ? 'Incomplete' : ''}
               hasError={hasError}
             >
               <AppConfigForm
