@@ -21,7 +21,7 @@ const slice = createSlice({
     selectedAppId: null,
     status: LOADING,
     saveStatus: SAVED,
-    // ValidationError is the Flag that represents a form is validate or not.
+    // ValidationError is the Flag that represents a form validation status.
     hasValidationError: false,
   },
   reducers: {

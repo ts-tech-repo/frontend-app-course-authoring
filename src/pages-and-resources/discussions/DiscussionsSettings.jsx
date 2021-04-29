@@ -30,8 +30,7 @@ const SETTINGS_STEP = 'settings';
 function DiscussionsSettings({ courseId, intl }) {
   const dispatch = useDispatch();
   const { path: pagesAndResourcesPath } = useContext(PagesAndResourcesContext);
-  const { status } = useSelector(state => state.discussions);
-  const { hasValidationError } = useSelector(state => state.discussions);
+  const { status, hasValidationError } = useSelector(state => state.discussions);
 
   useEffect(() => {
     dispatch(fetchApps(courseId));
