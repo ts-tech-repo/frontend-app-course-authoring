@@ -4,12 +4,17 @@ import { FormattedMessage, injectIntl, intlShape } from '@edx/frontend-platform/
 import { Card, Form, Hyperlink } from '@edx/paragon';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useDispatch } from 'react-redux';
 
+import {
+  updateValidationStatus,
+} from '../../../data/slice';
 import messages from './messages';
 
 function LtiConfigForm({
-  appConfig, app, onSubmit, intl, formRef, title, handleConfigError,
+  appConfig, app, onSubmit, intl, formRef, title,
 }) {
+  const dispatch = useDispatch();
   const {
     handleSubmit,
     handleChange,
@@ -17,7 +22,6 @@ function LtiConfigForm({
     values,
     touched,
     errors,
-    validateForm,
   } = useFormik({
     initialValues: appConfig,
     validationSchema: Yup.object().shape({
@@ -32,21 +36,13 @@ function LtiConfigForm({
   const isInvalidConsumerSecret = touched.consumerSecret && errors.consumerSecret;
   const isInvalidLaunchUrl = touched.launchUrl && errors.launchUrl;
 
-  const handleValidation = (event) => {
-    event.preventDefault();
-    validateForm().then(() => {
-      handleConfigError(true);
-      handleSubmit();
-    });
-  };
-
   useEffect(() => {
-    handleConfigError(Object.keys(errors).length > 0);
+    dispatch(updateValidationStatus({ hasError: Object.keys(errors).length > 0 }));
   }, [errors]);
 
   return (
     <Card className="mb-5 p-4" data-testid="ltiConfigForm">
-      <Form ref={formRef} onSubmit={handleValidation}>
+      <Form ref={formRef} onSubmit={handleSubmit}>
         <h3 className="mb-3">{title}</h3>
         <p className="mb-4">
           <FormattedMessage
@@ -75,7 +71,7 @@ function LtiConfigForm({
           />
           {isInvalidConsumerKey && (
           <Form.Control.Feedback type="invalid" hasIcon={false}>
-            <small>{errors.consumerKey}</small>
+            <span className="x-small">{errors.consumerKey}</span>
           </Form.Control.Feedback>
           )}
         </Form.Group>
@@ -88,7 +84,7 @@ function LtiConfigForm({
           />
           {isInvalidConsumerSecret && (
           <Form.Control.Feedback type="invalid" hasIcon={false}>
-            <small>{errors.consumerSecret}</small>
+            <span className="x-small">{errors.consumerSecret}</span>
           </Form.Control.Feedback>
           )}
         </Form.Group>
@@ -101,7 +97,7 @@ function LtiConfigForm({
           />
           {isInvalidLaunchUrl && (
           <Form.Control.Feedback type="invalid" hasIcon={false}>
-            <small>{errors.launchUrl}</small>
+            <span className="x-small">{errors.launchUrl}</span>
           </Form.Control.Feedback>
           )}
         </Form.Group>
@@ -122,7 +118,6 @@ LtiConfigForm.propTypes = {
   }),
   intl: intlShape.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  handleConfigError: PropTypes.func.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   formRef: PropTypes.object.isRequired,
   title: PropTypes.string.isRequired,

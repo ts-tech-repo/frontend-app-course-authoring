@@ -102,6 +102,7 @@ describe('Data layer integration tests', () => {
           selectedAppId: null,
           status: FAILED,
           saveStatus: SAVED,
+          hasValidationError: false,
         }),
       );
     });
@@ -119,6 +120,7 @@ describe('Data layer integration tests', () => {
           selectedAppId: null,
           status: DENIED,
           saveStatus: SAVED,
+          hasValidationError: false,
         }),
       );
     });
@@ -135,6 +137,7 @@ describe('Data layer integration tests', () => {
         selectedAppId: null,
         status: LOADED,
         saveStatus: SAVED,
+        hasValidationError: false,
       });
       expect(store.getState().models.apps.legacy).toEqual(legacyApp);
       expect(store.getState().models.apps.piazza).toEqual(piazzaApp);
@@ -159,6 +162,7 @@ describe('Data layer integration tests', () => {
         selectedAppId: null,
         status: LOADED,
         saveStatus: SAVED,
+        hasValidationError: false,
       });
       expect(store.getState().models.apps.legacy).toEqual(legacyApp);
       expect(store.getState().models.apps.piazza).toEqual(piazzaApp);
@@ -210,6 +214,7 @@ describe('Data layer integration tests', () => {
           selectedAppId: 'piazza',
           status: LOADED,
           saveStatus: FAILED,
+          hasValidationError: false,
         }),
       );
     });
@@ -235,6 +240,7 @@ describe('Data layer integration tests', () => {
           selectedAppId: 'piazza',
           status: DENIED, // We set BOTH statuses to DENIED for saveAppConfig - this removes the UI.
           saveStatus: DENIED,
+          hasValidationError: false,
         }),
       );
     });
@@ -288,6 +294,7 @@ describe('Data layer integration tests', () => {
           selectedAppId: 'piazza',
           status: LOADED,
           saveStatus: SAVED,
+          hasValidationError: false,
         }),
       );
       expect(store.getState().models.appConfigs.piazza).toEqual({
@@ -352,6 +359,7 @@ describe('Data layer integration tests', () => {
           selectedAppId: 'legacy',
           status: LOADED,
           saveStatus: SAVED,
+          hasValidationError: false,
         }),
       );
       expect(store.getState().models.appConfigs.legacy).toEqual({

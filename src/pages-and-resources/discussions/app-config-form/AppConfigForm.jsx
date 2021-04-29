@@ -23,7 +23,7 @@ import Loading from '../../../generic/Loading';
 import SaveFormConnectionErrorAlert from '../../../generic/SaveFormConnectionErrorAlert';
 
 function AppConfigForm({
-  courseId, intl, handleConfigError,
+  courseId, intl,
 }) {
   const dispatch = useDispatch();
   const { formRef } = useContext(AppConfigFormContext);
@@ -81,7 +81,6 @@ function AppConfigForm({
         appConfig={appConfig}
         onSubmit={handleSubmit}
         title={intl.formatMessage(messages[`appName-${app.id}`])}
-        handleConfigError={handleConfigError}
       />
     );
   }
@@ -96,7 +95,6 @@ function AppConfigForm({
 AppConfigForm.propTypes = {
   courseId: PropTypes.string.isRequired,
   intl: intlShape.isRequired,
-  handleConfigError: PropTypes.func.isRequired,
 };
 
 const IntlAppConfigForm = injectIntl(AppConfigForm);
