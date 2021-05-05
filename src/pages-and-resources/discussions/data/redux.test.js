@@ -5,7 +5,7 @@ import { history } from '@edx/frontend-platform';
 import initializeStore from '../../../store';
 import { getAppsUrl } from './api';
 import {
-  FAILED, SAVED, DENIED, selectApp,
+  FAILED, SAVED, DENIED, selectApp, updateValidationStatus,
 } from './slice';
 import { fetchApps, saveAppConfig } from './thunks';
 import { LOADED } from '../../../data/slice';
@@ -189,6 +189,15 @@ describe('Data layer integration tests', () => {
       store.dispatch(selectApp({ appId }));
 
       expect(store.getState().discussions.selectedAppId).toEqual(appId);
+    });
+  });
+
+  describe('updateValidationStatus', () => {
+    test('sets hasValidationError', () => {
+      const hasError = true;
+      store.dispatch(updateValidationStatus({ hasError }));
+
+      expect(store.getState().discussions.hasValidationError).toEqual(true);
     });
   });
 
