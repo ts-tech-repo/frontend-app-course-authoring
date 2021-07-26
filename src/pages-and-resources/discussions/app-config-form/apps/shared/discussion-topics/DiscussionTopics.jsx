@@ -5,12 +5,12 @@ import { Button } from '@edx/paragon';
 import { injectIntl, intlShape } from '@edx/frontend-platform/i18n';
 import { FieldArray, useFormikContext } from 'formik';
 import { v4 as uuid } from 'uuid';
-
+import _ from 'lodash';
 import messages from '../messages';
 import TopicItem from './TopicItem';
 import { updateValidationStatus } from '../../../../data/slice';
 import { LegacyConfigFormContext } from '../../legacy/LegacyConfigFormProvider';
-import uniqueItems from '../../../utils';
+import filterItemFromObject from '../../../utils';
 
 const DiscussionTopics = ({ intl }) => {
   const {
@@ -34,26 +34,22 @@ const DiscussionTopics = ({ intl }) => {
   const handleTopicDelete = async (topicIndex, topicId, remove) => {
     await remove(topicIndex);
     validateForm();
-    const validTopics = validDiscussionTopics.filter(topic => topic.id !== topicId);
-    setValidDiscussionTopics(validTopics);
+    setValidDiscussionTopics(filterItemFromObject(validDiscussionTopics, 'id', topicId));
   };
 
-  const handleOnFocus = useCallback((id, index, hasError) => {
-    console.log(`=>${id} - ${index} - ${hasError}`);
+  const handleOnFocus = useCallback((id, hasError) => {
     if (hasError) {
-      setValidDiscussionTopics(validDiscussionTopics.filter(topic => topic.id !== id));
-      debugger;
-      setFieldValue('divideDiscussionIds', divideDiscussionIds.filter(topic => topic.id !== id));
+      setValidDiscussionTopics(currentValidTopics => filterItemFromObject(currentValidTopics, 'id', id));
+      setFieldValue('divideDiscussionIds', filterItemFromObject(divideDiscussionIds, 'id', id));
     } else {
-      const validTopicsIds = uniqueItems(validDiscussionTopics.map(topic => topic.id), [id]);
-      console.log(`=> validdiscussionTopicErrorsTopicsIds: ${validTopicsIds}`);
-
-      debugger;
-      setValidDiscussionTopics(discussionTopics.filter(topic => validTopicsIds.includes(topic.id)));
-      setFieldValue('divideDiscussionIds', uniqueItems(divideDiscussionIds, [id]));
+      setValidDiscussionTopics(currentValidTopics => {
+        const allDiscussionTopics = [...currentValidTopics, ...discussionTopics.filter(topic => topic.id === id)];
+        const allValidTopics = _.remove(allDiscussionTopics, topic => topic.name !== '');
+        return _.uniqBy(allValidTopics, 'id');
+      });
+      setFieldValue('divideDiscussionIds', _.uniq([...divideDiscussionIds, id]));
     }
-  }, [discussionTopics, validDiscussionTopics, divideDiscussionIds]);
-
+  }, [divideDiscussionIds, discussionTopics]);
 
   const addNewTopic = (push) => {
     const payload = { name: '', id: uuid() };
@@ -82,7 +78,7 @@ const DiscussionTopics = ({ intl }) => {
                   key={`topic-${topic.id}`}
                   index={index}
                   onDelete={() => handleTopicDelete(index, topic.id, remove)}
-                  onFocus={(hasError) => handleOnFocus(topic.id, index, hasError)}
+                  onFocus={(hasError) => handleOnFocus(topic.id, hasError)}
                   hasError={discussionTopicErrors[index]}
                 />
               ))}

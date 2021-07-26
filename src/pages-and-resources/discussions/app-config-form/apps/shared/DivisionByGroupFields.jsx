@@ -23,20 +23,14 @@ const DivisionByGroupFields = ({ intl }) => {
   } = appConfig;
 
   useEffect(() => {
-    const discussionTopicIds = discussionTopics.map(
-      (topic) => topic.id,
-    );
-    const divideCourseTopicsByCohortsOff = (
-      discussionTopicIds.length === divideDiscussionIds.length
-      && discussionTopicIds.every((topicId) => divideDiscussionIds.includes(topicId))
-    ) || !divideDiscussionIds.length;
-
     if (divideByCohorts) {
-      if (divideCourseTopicsByCohortsOff && !divideCourseTopicsByCohorts) {
-        setFieldValue('divideCourseTopicsByCohorts', false);
-        setFieldValue('divideDiscussionIds', discussionTopicIds);
-      } else {
+      if (divideDiscussionIds.length > 0 && discussionTopics.length !== divideDiscussionIds.length) {
         setFieldValue('divideCourseTopicsByCohorts', true);
+      } else if (discussionTopics.length === divideDiscussionIds.length) {
+        setFieldValue('divideCourseTopicsByCohorts', false);
+      } else {
+        setFieldValue('divideCourseTopicsByCohorts', false);
+        setFieldValue('divideDiscussionIds', discussionTopics.map(topic => topic.id));
       }
     } else {
       setFieldValue('divideDiscussionIds', []);
@@ -44,8 +38,8 @@ const DivisionByGroupFields = ({ intl }) => {
     }
   }, [
     divideByCohorts,
-    divideCourseTopicsByCohorts,
     discussionTopics,
+    divideCourseTopicsByCohorts,
   ]);
 
   const handleCheckBoxToggle = (event, push, remove) => {
