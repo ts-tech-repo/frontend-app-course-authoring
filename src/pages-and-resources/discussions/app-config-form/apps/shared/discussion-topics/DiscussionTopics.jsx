@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Add } from '@edx/paragon/icons';
 import { Button } from '@edx/paragon';
@@ -10,13 +10,15 @@ import messages from '../messages';
 import TopicItem from './TopicItem';
 import { updateValidationStatus } from '../../../../data/slice';
 import { LegacyConfigFormContext } from '../../legacy/LegacyConfigFormProvider';
+import uniqueItems from '../../../utils';
 
 const DiscussionTopics = ({ intl }) => {
   const {
     values: appConfig,
     validateForm,
+    setFieldValue,
   } = useFormikContext();
-  const { discussionTopics } = appConfig;
+  const { discussionTopics, divideDiscussionIds } = appConfig;
   const dispatch = useDispatch();
   const {
     discussionTopicErrors,
@@ -35,6 +37,23 @@ const DiscussionTopics = ({ intl }) => {
     const validTopics = validDiscussionTopics.filter(topic => topic.id !== topicId);
     setValidDiscussionTopics(validTopics);
   };
+
+  const handleOnFocus = useCallback((id, index, hasError) => {
+    console.log(`=>${id} - ${index} - ${hasError}`);
+    if (hasError) {
+      setValidDiscussionTopics(validDiscussionTopics.filter(topic => topic.id !== id));
+      debugger;
+      setFieldValue('divideDiscussionIds', divideDiscussionIds.filter(topic => topic.id !== id));
+    } else {
+      const validTopicsIds = uniqueItems(validDiscussionTopics.map(topic => topic.id), [id]);
+      console.log(`=> validdiscussionTopicErrorsTopicsIds: ${validTopicsIds}`);
+
+      debugger;
+      setValidDiscussionTopics(discussionTopics.filter(topic => validTopicsIds.includes(topic.id)));
+      setFieldValue('divideDiscussionIds', uniqueItems(divideDiscussionIds, [id]));
+    }
+  }, [discussionTopics, validDiscussionTopics, divideDiscussionIds]);
+
 
   const addNewTopic = (push) => {
     const payload = { name: '', id: uuid() };
@@ -63,6 +82,7 @@ const DiscussionTopics = ({ intl }) => {
                   key={`topic-${topic.id}`}
                   index={index}
                   onDelete={() => handleTopicDelete(index, topic.id, remove)}
+                  onFocus={(hasError) => handleOnFocus(topic.id, index, hasError)}
                   hasError={discussionTopicErrors[index]}
                 />
               ))}

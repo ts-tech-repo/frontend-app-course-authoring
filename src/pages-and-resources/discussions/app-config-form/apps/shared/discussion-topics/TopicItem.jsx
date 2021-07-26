@@ -17,7 +17,7 @@ import { LegacyConfigFormContext } from '../../legacy/LegacyConfigFormProvider';
 import uniqueItems from '../../../utils';
 
 const TopicItem = ({
-  intl, index, name, onDelete, id, hasError,
+  intl, index, name, onDelete, id, hasError, onFocus
 }) => {
   const {
     handleChange, handleBlur, errors, values: appConfig, setFieldValue,
@@ -26,11 +26,12 @@ const TopicItem = ({
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [collapseIsOpen, setCollapseOpen] = useState();
   const isGeneralTopic = id === 'course';
-  const {
-    validDiscussionTopics,
-    setValidDiscussionTopics,
-  } = useContext(LegacyConfigFormContext);
-  const { discussionTopics, divideDiscussionIds } = appConfig;
+
+  // const {
+  //   validDiscussionTopics,
+  //   setValidDiscussionTopics,
+  // } = useContext(LegacyConfigFormContext);
+  // const { discussionTopics, divideDiscussionIds } = appConfig;
 
   /**
  * Update valid discussion topics & divided discussion topics.
@@ -39,20 +40,24 @@ const TopicItem = ({
  * Adds a specific topic to valid discussion topics & divided discussion topics
  * if it is invalid.
  */
+  // useEffect(() => {
+  //   if (hasError) {
+  //     const validTopicsIds = validDiscussionTopics.filter(topic => topic.id !== id);
+  //     setValidDiscussionTopics(validTopicsIds);
+  //     setFieldValue('divideDiscussionIds', divideDiscussionIds.filter(topic => topic.id !== id));
+  //   } else {
+  //     const validTopicsIds = uniqueItems(validDiscussionTopics.map(topic => topic.id), [id]);
+  //     const validTopics = discussionTopics.filter(
+  //       topic => validTopicsIds.includes(topic.id),
+  //     );
+  //     setValidDiscussionTopics(validTopics);
+  //     setFieldValue('divideDiscussionIds', uniqueItems(divideDiscussionIds, [id]));
+  //   }
+  // }, [hasError, inFocus]);
+
   useEffect(() => {
-    if (hasError) {
-      const validTopicsIds = validDiscussionTopics.filter(topic => topic.id !== id);
-      setValidDiscussionTopics(validTopicsIds);
-      setFieldValue('divideDiscussionIds', divideDiscussionIds.filter(topic => topic.id !== id));
-    } else {
-      const validTopicsIds = uniqueItems(validDiscussionTopics.map(topic => topic.id), [id]);
-      const validTopics = discussionTopics.filter(
-        topic => validTopicsIds.includes(topic.id),
-      );
-      setValidDiscussionTopics(validTopics);
-      setFieldValue('divideDiscussionIds', uniqueItems(divideDiscussionIds, [id]));
-    }
-  }, [hasError, inFocus]);
+    onFocus(hasError);
+  }, [inFocus, hasError]);
 
   const getHeading = (isOpen = false) => {
     let heading;
