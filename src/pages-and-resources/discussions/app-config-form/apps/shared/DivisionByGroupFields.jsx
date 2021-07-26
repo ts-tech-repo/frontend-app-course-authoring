@@ -6,6 +6,7 @@ import FormSwitchGroup from '../../../../../generic/FormSwitchGroup';
 import messages from './messages';
 import AppConfigFormDivider from './AppConfigFormDivider';
 import { LegacyConfigFormContext } from '../legacy/LegacyConfigFormProvider';
+import _ from 'lodash';
 
 const DivisionByGroupFields = ({ intl }) => {
   const { validDiscussionTopics } = useContext(LegacyConfigFormContext);
@@ -24,12 +25,7 @@ const DivisionByGroupFields = ({ intl }) => {
 
   useEffect(() => {
     if (divideByCohorts) {
-      if (divideDiscussionIds.length > 0 && discussionTopics.length !== divideDiscussionIds.length) {
-        setFieldValue('divideCourseTopicsByCohorts', true);
-      } else if (discussionTopics.length === divideDiscussionIds.length) {
-        setFieldValue('divideCourseTopicsByCohorts', false);
-      } else {
-        setFieldValue('divideCourseTopicsByCohorts', false);
+      if (!divideCourseTopicsByCohorts && _.size(discussionTopics) !== _.size(divideDiscussionIds)) {
         setFieldValue('divideDiscussionIds', discussionTopics.map(topic => topic.id));
       }
     } else {
@@ -38,7 +34,6 @@ const DivisionByGroupFields = ({ intl }) => {
     }
   }, [
     divideByCohorts,
-    discussionTopics,
     divideCourseTopicsByCohorts,
   ]);
 
