@@ -9,7 +9,7 @@ import {
   ModalDialog,
   useCheckboxSetValues,
 } from '@openedx/paragon';
-import { SelectableBox } from '@edx/frontend-lib-content-components';
+import SelectableBox from '../../../../generic/SelectableBox';
 import messages from './messages';
 import { getCheckedFilters, getFilterOptions, processFilters } from './utils';
 
@@ -78,7 +78,11 @@ const SortAndFilterModal = ({
         <SelectableBox.Set
           type="radio"
           value={sortBy}
-          onChange={handleChange}
+          onChange={(...args) => {
+            // eslint-disable-next-line no-console
+            console.log('handleChange called with args: ', args);
+            handleChange(...args);
+          }}
           name="sort options"
           columns={3}
           ariaLabel="sort by selection"
