@@ -43,7 +43,6 @@ export const removeFilter = (filter, setFilter, setAllFilters, state) => {
   } else {
     updatedFilterValue = filter.includes(editedFilter?.value) ? [] : editedFilter.value;
   }
-
   if (isEmpty(updatedFilterValue)) {
     const updatedFilters = filters.filter(currentFilter => currentFilter.id !== editedFilter.id);
     setAllFilters(updatedFilters);
@@ -53,12 +52,13 @@ export const removeFilter = (filter, setFilter, setAllFilters, state) => {
 };
 
 export const getCurrentViewRange = ({
+  hasFilters,
   filterRowCount,
   initialRowCount,
   fileCount,
   intl,
 }) => {
-  if (filterRowCount === initialRowCount) {
+  if (!hasFilters) {
     return intl.formatMessage(
       messages.rowStatusMessage,
       { fileCount, rowCount: initialRowCount },

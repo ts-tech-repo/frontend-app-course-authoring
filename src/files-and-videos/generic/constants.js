@@ -36,4 +36,6 @@ const FILES_AND_UPLOAD_TYPE_FILTERS = {
   video: ['.mp4', '.mov'],
 };
 
+// const WRAPPER_TYPES = 
+
 export default FILES_AND_UPLOAD_TYPE_FILTERS;

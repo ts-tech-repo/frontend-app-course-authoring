@@ -43,12 +43,13 @@ const FilesPage = ({
   document.title = getPageHeadTitle(courseDetails?.name, intl.formatMessage(messages.heading));
 
   useEffect(() => {
-    dispatch(fetchAssets(courseId));
+    dispatch(fetchAssets({courseId}));
   }, [courseId]);
 
   const {
     assetIds,
     loadingStatus,
+    totalAssetCount,
     addingStatus: addAssetStatus,
     deletingStatus: deleteAssetStatus,
     updatingStatus: updateAssetStatus,
@@ -72,8 +73,11 @@ const FilesPage = ({
     dispatch(updateAssetLock({ courseId, assetId: fileId, locked }));
   };
   const handleUsagePaths = (asset) => dispatch(getUsagePaths({ asset, courseId }));
-  const handleFileOrder = ({ newFileIdOrder, sortType }) => {
-    dispatch(updateAssetOrder(courseId, newFileIdOrder, sortType));
+  const handleFileOrder = ({ filters, sortType }) => dispatch(fetchAssets({courseId, filters, sortType}));
+  const handleSearch = (filters, sortBy) => {
+    // const { filters, sortBy } = state;
+    console.log(filters, sortBy);
+    dispatch(fetchAssets({ courseId, filters, sortType: sortBy }))
   };
 
   const thumbnailPreview = (props) => FileThumbnail(props);
@@ -89,6 +93,7 @@ const FilesPage = ({
     usagePathStatus,
     usageErrorMessages: errorMessages.usageMetrics,
     fileType: 'file',
+    fileCount: totalAssetCount,
   };
   const maxFileSize = 20 * 1048576;
 
@@ -204,6 +209,7 @@ const FilesPage = ({
                 handleUsagePaths,
                 handleErrorReset,
                 handleFileOrder,
+                handleSearch,
                 tableColumns,
                 maxFileSize,
                 thumbnailPreview,

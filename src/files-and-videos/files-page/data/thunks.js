@@ -27,51 +27,54 @@ import {
   clearErrors,
   updateEditStatus,
   updateDuplicateFiles,
+  fetchSuccess,
 } from './slice';
 
-import { getUploadConflicts, updateFileValues } from './utils';
+import {
+  getSortApiParams,
+  getFilterApiParams,
+  getUploadConflicts,
+  updateFileValues,
+} from './utils';
 
-export function fetchAdditionalAssets(courseId, totalCount) {
-  return async (dispatch) => {
-    let remainingAssetCount = totalCount;
-    let page = 1;
-
-    /* eslint-disable no-await-in-loop */
-    while (remainingAssetCount > 0) {
-      try {
-        const { assets } = await getAssets(courseId, page);
-        const parsedAssets = updateFileValues(assets);
-        dispatch(addModels({ modelType: 'assets', models: parsedAssets }));
-        dispatch(setAssetIds({
-          assetIds: assets.map(asset => asset.id),
-        }));
-        remainingAssetCount -= 50;
-        page += 1;
-      } catch (error) {
-        remainingAssetCount = 0;
-        dispatch(updateErrors({ error: 'loading', message: 'Failed to load remaining files.' }));
-        dispatch(updateLoadingStatus({ status: RequestStatus.PARTIAL_FAILURE }));
-      }
-    }
-  };
-}
-
-export function fetchAssets(courseId) {
+export function fetchAdditionalAssets({ courseId, pageNumber, sortBy, filters }) {
   return async (dispatch) => {
     dispatch(updateLoadingStatus({ courseId, status: RequestStatus.IN_PROGRESS }));
-
     try {
-      const { assets, totalCount } = await getAssets(courseId);
+      const [sort, direction] = getSortApiParams(sortBy);
+      const { assets } = await getAssets({courseId, page: pageNumber, sort, direction, asset_type: filters});
       const parsedAssets = updateFileValues(assets);
       dispatch(addModels({ modelType: 'assets', models: parsedAssets }));
       dispatch(setAssetIds({
         assetIds: assets.map(asset => asset.id),
       }));
-      if (totalCount > 50) {
-        dispatch(fetchAdditionalAssets(courseId, totalCount - 50));
-      }
       dispatch(updateLoadingStatus({ courseId, status: RequestStatus.SUCCESSFUL }));
     } catch (error) {
+      console.log(error);
+      dispatch(updateErrors({ error: 'loading', message: 'Failed to load remaining files.' }));
+      dispatch(updateLoadingStatus({ status: RequestStatus.PARTIAL_FAILURE }));
+    }
+  };
+}
+
+export function fetchAssets({courseId, filters, sortType}) {
+  return async (dispatch) => {
+    dispatch(updateLoadingStatus({ courseId, status: RequestStatus.IN_PROGRESS }));
+
+    try {
+      console.log(filters);
+      const [sort, direction] = getSortApiParams(sortType);
+      const { asset_type, text_search } = getFilterApiParams(filters);
+      const { assets, totalCount } = await getAssets({courseId, asset_type, text_search, sort, direction});
+      const parsedAssets = updateFileValues(assets);
+      dispatch(addModels({ modelType: 'assets', models: parsedAssets }));
+      dispatch(fetchSuccess({
+        assetIds: assets.map(asset => asset.id),
+        totalCount,
+      }));
+      dispatch(updateLoadingStatus({ courseId, status: RequestStatus.SUCCESSFUL }));
+    } catch (error) {
+      console.log(error);
       if (error.response && error.response.status === 403) {
         dispatch(updateLoadingStatus({ status: RequestStatus.DENIED }));
       } else {

@@ -12,7 +12,7 @@ import {
   useCheckboxSetValues,
 } from '@openedx/paragon';
 import messages from './messages';
-import { getCheckedFilters, getFilterOptions, processFilters } from './utils';
+import { getCheckedFilters, getFilterOptions, getSortState, processFilters, setSortState } from './utils';
 
 const SortAndFilterModal = ({
   isSortOpen,
@@ -22,11 +22,11 @@ const SortAndFilterModal = ({
   intl,
 }) => {
   const {
-    state, setAllFilters, columns, gotoPage,
+    state, setAllFilters, columns, gotoPage, setSortBy,
   } = useContext(DataTableContext);
   const filterOptions = getFilterOptions(columns);
   const currentFilters = getCheckedFilters(state);
-  const [sortBy, setSortBy] = useState('dateAdded,desc');
+  const [sortBy, setLocalSortBy] = useState(getSortState(state.sortBy));
   const [filterBy, {
     add, remove, set, clear,
   }] = useCheckboxSetValues(currentFilters);
@@ -39,7 +39,7 @@ const SortAndFilterModal = ({
   const handleChange = (e) => {
     // eslint-disable-next-line no-console
     console.log('SortAndFilterModal | handleChange called | e: ', e);
-    setSortBy(e.target.value);
+    setLocalSortBy(e.target.value);
   };
 
   const handleFilterUpdate = (e) => {
@@ -50,14 +50,16 @@ const SortAndFilterModal = ({
     }
   };
   const handleApply = async () => {
-    await handleSort(sortBy);
-    processFilters(filterBy, columns, setAllFilters);
+    setSortState(sortBy, setSortBy);
+    const updatedFilterState = processFilters(filterBy, columns, setAllFilters);
+    console.log(updatedFilterState);
+    await handleSort(updatedFilterState, sortBy);
     gotoPage(0);
     closeSort();
   };
 
   const handleClearAll = () => {
-    setSortBy('dateAdded,desc');
+    setLocalSortBy('dateAdded,desc');
     clear();
   };
 

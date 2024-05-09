@@ -3,8 +3,10 @@ import {
   Terminal,
   AudioFile,
 } from '@openedx/paragon/icons';
+import { isEmpty } from 'lodash';
 import { ensureConfig, getConfig } from '@edx/frontend-platform';
 import FILES_AND_UPLOAD_TYPE_FILTERS from '../../generic/constants';
+import FILE_TYPES from './constants';
 
 ensureConfig([
   'STUDIO_BASE_URL',
@@ -71,3 +73,48 @@ export const getUploadConflicts = (filesToUpload, assets) => {
   });
   return [conflicts, newFiles];
 };
+
+export const getSortApiParams = (sortType) => {
+  if (!isEmpty(sortType)) {
+    const {id, desc} = sortType[0];
+    const direction = desc ? 'desc' : 'asc';
+    switch (id) {
+    case 'displayName':
+      return ['displayname', direction];
+    case 'dateAdded':
+      return ['uploadDate', direction];
+    case 'fileSize':
+      return ['fileSize', direction];
+                
+    default:
+      break;
+    }
+    return [id, direction];
+  }
+  return [];
+};
+
+export const getFilterApiParams = (filters) => {
+  
+  if (!isEmpty(filters)) {
+    const parsedFilters = {
+      text_search: '',
+      asset_type: '',
+    }
+    filters.forEach(filter => {
+      const { id, value } = filter
+      switch(id) {
+      case 'displayName':
+        parsedFilters.text_search = value[0]
+        break;
+      case 'wrapperType':
+        value.map(({ type }) => FILE_TYPES?.[type]).join(',');
+        break;
+      default:
+        break;
+      }
+    });
+    return parsedFilters
+  }
+  return {};
+}

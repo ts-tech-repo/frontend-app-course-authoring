@@ -8,6 +8,7 @@ const slice = createSlice({
   name: 'assets',
   initialState: {
     assetIds: [],
+    totalAssetCount: 0,
     loadingStatus: RequestStatus.IN_PROGRESS,
     duplicateFiles: [],
     updatingStatus: '',
@@ -24,6 +25,10 @@ const slice = createSlice({
     },
   },
   reducers: {
+    fetchSuccess: (state, {payload}) => {
+      state.assetIds = payload.assetIds;
+      state.totalAssetCount = payload.totalCount;
+    },
     setAssetIds: (state, { payload }) => {
       if (isEmpty(state.assetIds)) {
         state.assetIds = payload.assetIds;
@@ -94,6 +99,7 @@ export const {
   clearErrors,
   updateEditStatus,
   updateDuplicateFiles,
+  fetchSuccess,
 } = slice.actions;
 
 export const {

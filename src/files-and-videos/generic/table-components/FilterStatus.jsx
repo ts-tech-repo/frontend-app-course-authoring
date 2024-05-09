@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { FormattedMessage, useIntl } from '@edx/frontend-platform/i18n';
 import {
   DataTableContext, Button, Row, Chip,
@@ -11,6 +12,7 @@ const FilterStatus = ({
   className, variant, size, clearFiltersText, buttonClassName,
 }) => {
   const intl = useIntl();
+  const dispatch = useDispatch();
   const {
     state, setAllFilters, setFilter, RowStatusComponent, columns,
   } = useContext(DataTableContext);
@@ -35,7 +37,7 @@ const FilterStatus = ({
               defaultMessage: 'Remove this filter',
               description: 'Remove one of the applied filters.',
             })}
-            onIconAfterClick={() => removeFilter(value, setFilter, setAllFilters, state)}
+            onIconAfterClick={() => removeFilter(value, setFilter, setAllFilters, state, dispatch)}
           >
             {name}
           </Chip>

@@ -17,10 +17,9 @@ export const getAssetsUrl = (courseId) => `${getApiBaseUrl()}/assets/${courseId}
  * @param {string} courseId
  * @returns {Promise<[{}]>}
  */
-export async function getAssets(courseId, page) {
-  const nextPage = page || 0;
+export async function getAssets({courseId, ...params}) {
   const { data } = await getAuthenticatedHttpClient()
-    .get(`${getAssetsUrl(courseId)}?page=${nextPage}`);
+    .get(getAssetsUrl(courseId), { params });
   return camelCaseObject(data);
 }
 

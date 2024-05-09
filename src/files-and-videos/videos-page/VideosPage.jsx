@@ -46,6 +46,7 @@ import VideoThumbnail from './VideoThumbnail';
 import { getFormattedDuration, resampleFile } from './data/utils';
 import FILES_AND_UPLOAD_TYPE_FILTERS from '../generic/constants';
 import VideoInfoModalSidebar from './info-sidebar';
+import { sortFiles } from '../generic/utils';
 
 const VideosPage = ({
   courseId,
@@ -101,6 +102,8 @@ const VideosPage = ({
     'video/*': videoSupportedFileFormats || FILES_AND_UPLOAD_TYPE_FILTERS.video,
   };
 
+  const videos = useModels('videos', videoIds);
+
   const handleErrorReset = (error) => dispatch(resetErrors(error));
   const handleAddFile = (files) => {
     handleErrorReset({ errorType: 'add' });
@@ -109,7 +112,8 @@ const VideosPage = ({
   const handleDeleteFile = (id) => dispatch(deleteVideoFile(courseId, id));
   const handleDownloadFile = (selectedRows) => dispatch(fetchVideoDownload({ selectedRows, courseId }));
   const handleUsagePaths = (video) => dispatch(getUsagePaths({ video, courseId }));
-  const handleFileOrder = ({ newFileIdOrder, sortType }) => {
+  const handleFileOrder = ({ sortType }) => {
+    const newFileIdOrder = sortFiles(videos, sortType);
     dispatch(updateVideoOrder(courseId, newFileIdOrder, sortType));
   };
   const handleAddThumbnail = (file, videoId) => resampleFile({
@@ -120,16 +124,14 @@ const VideosPage = ({
     addVideoThumbnail,
   });
 
-  const videos = useModels('videos', videoIds);
-
   const data = {
     supportedFileFormats,
     encodingsDownloadUrl,
-    fileIds: videoIds,
     loadingStatus,
     usagePathStatus,
     usageErrorMessages: errorMessages.usageMetrics,
     fileType: 'video',
+    fileCount: videos.length,
   };
   const thumbnailPreview = (props) => VideoThumbnail({
     ...props,

@@ -14,6 +14,7 @@ export const getFilterOptions = (columns) => {
 
 export const getCheckedFilters = (state) => {
   const { filters } = state;
+  console.log(filters);
   const allFilters = [];
   filters.forEach(filter => {
     const { id, value } = filter;
@@ -31,8 +32,10 @@ export const getCheckedFilters = (state) => {
 export const processFilters = (filters, columns, setAllFilters) => {
   const filterableColumns = columns.filter(column => column?.filterChoices);
   const allFilters = [];
+  console.log(filterableColumns,filters);
 
   const [displayNameFilter] = filters.filter(filter => isArray(filter));
+  console.log(displayNameFilter);
   if (displayNameFilter) {
     const [id, filterValue] = displayNameFilter;
     allFilters.push({ id, value: [filterValue] });
@@ -48,4 +51,20 @@ export const processFilters = (filters, columns, setAllFilters) => {
   });
 
   setAllFilters(allFilters);
+  return allFilters;
+};
+
+export const setSortState = (sortType, setSortBy) => {
+  const [sort, direction] = sortType.split(',');
+  const desc = direction === 'desc';
+  setSortBy([{ id: sort, desc}]);
+};
+
+export const getSortState = (sortBy) => {
+  if (isEmpty(sortBy)) {
+    return 'dateAdded,desc';
+  }
+  const { id, desc } = sortBy[0];
+  const direction = desc ? 'desc' : 'asc';
+  return `${id},${direction}`;
 };

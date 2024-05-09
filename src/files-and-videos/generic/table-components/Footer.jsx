@@ -1,16 +1,24 @@
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { DataTableContext, Pagination, TableFooter } from '@openedx/paragon';
+import { fetchAdditionalAssets } from '../../files-page/data/thunks';
 
-const Footer = () => {
-  const {
-    pageOptions, pageCount, gotoPage, state,
-  } = useContext(DataTableContext);
-
-  if (pageOptions.length < 2) {
-    return null;
+const Footer = ({ courseId, pageCount, fileType }) => {
+  const dispatch = useDispatch();
+  const { itemCount, gotoPage, state } = useContext(DataTableContext);
+  const pageIndex = state?.pageIndex;
+  const handlePageSelect = async (pageNum) => {
+    if (fileType === 'file') {
+      const { filters, sortBy } = state;
+      await dispatch(fetchAdditionalAssets({ courseId, pageNumber: pageNum - 1, filters, sortBy }));
+    }
+    gotoPage(pageNum - 1);
   }
 
-  const pageIndex = state?.pageIndex;
+  if (itemCount <= 50) {
+    return null;
+  }
 
   return (
     <TableFooter>
@@ -19,10 +27,16 @@ const Footer = () => {
         currentPage={pageIndex + 1}
         pageCount={pageCount}
         paginationLabel="table pagination"
-        onPageSelect={(pageNum) => gotoPage(pageNum - 1)}
+        onPageSelect={handlePageSelect}
       />
     </TableFooter>
   );
 };
+
+Footer.propTypes = {
+  courseId: PropTypes.string.isRequired,
+  fileType: PropTypes.string.isRequired,
+  pageCount: PropTypes.number.isRequired,
+}
 
 export default Footer;

@@ -9,6 +9,11 @@
     visibility: hidden;
   }
 
+  .pgn__data-table-actions {
+    visibility: hidden;
+    background-color: red;
+  }
+
   .pgn__data-table-layout-wrapper {
     overflow-x: visible;
   }
@@ -19,10 +24,7 @@
 
     .pgn__data-table-status-bar {
       padding: 12px 0;
-
-      .pgn__data-table-actions-left {
-        margin-top: 16px;
-      }
+      margin-top: -32px;
     }
 
     .pgn__data-table-card-view {

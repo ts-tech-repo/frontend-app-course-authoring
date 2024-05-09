@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
 import { injectIntl, intlShape } from '@edx/frontend-platform/i18n';
@@ -8,10 +8,10 @@ import {
   Dropzone,
   TextFilter,
   useToggle,
+  DataTableContext,
 } from '@openedx/paragon';
 
 import { RequestStatus } from '../../data/constants';
-import { sortFiles } from './utils';
 import messages from './messages';
 
 import InfoModal from './InfoModal';
@@ -28,6 +28,7 @@ import ApiStatusToast from './ApiStatusToast';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
 
 const FileTable = ({
+  courseId,
   files,
   data,
   handleAddFile,
@@ -37,6 +38,7 @@ const FileTable = ({
   handleUsagePaths,
   handleErrorReset,
   handleFileOrder,
+  handleSearch,
   tableColumns,
   maxFileSize,
   thumbnailPreview,
@@ -45,7 +47,6 @@ const FileTable = ({
   intl,
 }) => {
   const defaultVal = 'card';
-  const pageCount = Math.ceil(files.length / 50);
   const columnSizes = {
     xs: 12,
     sm: 6,
@@ -76,7 +77,10 @@ const FileTable = ({
     encodingsDownloadUrl,
     supportedFileFormats,
     fileType,
+    fileCount,
   } = data;
+
+  const pageCount = Math.ceil(fileCount / 50);
 
   useEffect(() => {
     if (!isEmpty(selectedRows) && Object.keys(selectedRows[0]).length > 0) {
@@ -106,9 +110,8 @@ const FileTable = ({
     }
   };
 
-  const handleSort = (sortType) => {
-    const newFileIdOrder = sortFiles(files, sortType);
-    handleFileOrder({ newFileIdOrder, sortType });
+  const handleSort = (filterBy, sortType) => {
+    handleFileOrder({ filters: filterBy, sortType });
   };
 
   const handleBulkDelete = () => {
@@ -137,22 +140,6 @@ const FileTable = ({
     handleUsagePaths(original);
     openAssetInfo();
   };
-
-  const headerActions = ({ selectedFlatRows }) => (
-    <TableActions
-      {...{
-        selectedFlatRows,
-        fileInputControl,
-        encodingsDownloadUrl,
-        handleSort,
-        handleBulkDownload,
-        handleOpenDeleteConfirmation,
-        supportedFileFormats,
-        fileType,
-        setInitialState,
-      }}
-    />
-  );
 
   const fileCard = ({ className, original }) => (
     <GalleryCard
@@ -195,7 +182,7 @@ const FileTable = ({
         isSortable
         isSelectable
         isPaginated
-        defaultColumnValues={{ Filter: TextFilter }}
+        defaultColumnValues={{ Filter: [TextFilter] }}
         dataViewToggleOptions={{
           isDataViewToggleEnabled: true,
           onDataViewToggle: val => setCurrentView(val),
@@ -203,10 +190,8 @@ const FileTable = ({
           togglePlacement: 'left',
         }}
         initialState={initialState}
-        tableActions={headerActions}
-        bulkActions={headerActions}
         columns={tableColumns}
-        itemCount={files.length}
+        itemCount={fileCount}
         pageCount={pageCount}
         data={files}
         FilterStatusComponent={FilterStatus}
@@ -225,12 +210,25 @@ const FileTable = ({
           />
         ) : (
           <div data-testid="files-data-table" className="bg-light-200">
+            <TableActions
+              {...{
+                fileInputControl,
+                encodingsDownloadUrl,
+                handleSort,
+                handleBulkDownload,
+                handleOpenDeleteConfirmation,
+                supportedFileFormats,
+                fileType,
+                setInitialState,
+                handleSearch,
+              }}
+            />
             <DataTable.TableControlBar />
             <hr className="mb-5 border-light-700" />
             { currentView === 'card' && <CardView CardComponent={fileCard} columnSizes={columnSizes} selectionPlacement="left" skeletonCardCount={6} /> }
             { currentView === 'list' && <DataTable.Table /> }
             <DataTable.EmptyTable content={intl.formatMessage(messages.noResultsFoundMessage)} />
-            <Footer />
+            <Footer {...{ courseId, pageCount, fileType }} />
           </div>
         )}
 
@@ -290,7 +288,6 @@ FileTable.propTypes = {
   courseId: PropTypes.string.isRequired,
   files: PropTypes.arrayOf(PropTypes.shape({})),
   data: PropTypes.shape({
-    fileIds: PropTypes.arrayOf(PropTypes.string).isRequired,
     loadingStatus: PropTypes.string.isRequired,
     usagePathStatus: PropTypes.string.isRequired,
     usageErrorMessages: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -305,6 +302,7 @@ FileTable.propTypes = {
   handleLockFile: PropTypes.func,
   handleErrorReset: PropTypes.func.isRequired,
   handleFileOrder: PropTypes.func.isRequired,
+  handleSearch: PropTypes.func,
   tableColumns: PropTypes.arrayOf(PropTypes.shape({
     Header: PropTypes.string,
     accessor: PropTypes.string,
@@ -319,6 +317,7 @@ FileTable.propTypes = {
 FileTable.defaultProps = {
   files: null,
   handleLockFile: () => {},
+  handleSearch: null,
 };
 
 export default injectIntl(FileTable);
