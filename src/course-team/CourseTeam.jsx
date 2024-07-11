@@ -59,7 +59,9 @@ const CourseTeam = ({ courseId }) => {
     // eslint-disable-next-line react/jsx-no-useless-fragment
     return <></>;
   }
-
+  console.log("currentEmail",currentEmail);
+  console.log("email",email);
+  console.log("currentUserEmail",currentUserEmail);
   return (
     <>
       <Container size="xl" className="px-4">
