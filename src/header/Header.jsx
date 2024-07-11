@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { getConfig } from '@edx/frontend-platform';
 import { injectIntl, intlShape } from '@edx/frontend-platform/i18n';
+import { AppContext } from '@edx/frontend-platform/react';
 
 import { StudioHeader } from '@edx/frontend-component-header';
 import { getContentMenuItems, getSettingMenuItems, getToolsMenuItems } from './utils';
@@ -17,6 +18,7 @@ const Header = ({
   intl,
 }) => {
   const studioBaseUrl = getConfig().STUDIO_BASE_URL;
+  const { authenticatedUser } = React.useContext(AppContext);
   const mainMenuDropdowns = [
     {
       id: `${intl.formatMessage(messages['header.links.content'])}-dropdown-menu`,
@@ -37,6 +39,7 @@ const Header = ({
   const outlineLink = `${studioBaseUrl}/course/${courseId}`;
   return (
     <div className="site-header-desktop">
+      <span className="emailAddress" style={{display:"none"}}>{authenticatedUser.username}</span>
       <StudioHeader
         {...{
           org: courseOrg,
