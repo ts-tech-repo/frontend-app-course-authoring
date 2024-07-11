@@ -39,7 +39,7 @@ const Header = ({
   const outlineLink = `${studioBaseUrl}/course/${courseId}`;
   return (
     <div className="site-header-desktop">
-      <span className="emailAddress" style={{display:"none"}}>{authenticatedUser.username}</span>
+      <span className="emailAddress" style={{display:"none"}}>{authenticatedUser.email}</span>
       <StudioHeader
         {...{
           org: courseOrg,
