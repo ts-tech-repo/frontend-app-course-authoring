@@ -103,7 +103,7 @@ const messages = defineMessages({
   },
   'header.user.menu.studio': {
     id: 'header.user.menu.studio',
-    defaultMessage: 'Home',
+    defaultMessage: 'Studio Home',
     description: 'Link to Studio Home',
   },
   'header.user.menu.maintenance': {
@@ -113,7 +113,7 @@ const messages = defineMessages({
   },
   'header.user.menu.logout': {
     id: 'header.user.menu.logout',
-    defaultMessage: 'Sign Out',
+    defaultMessage: 'Logout',
     description: 'Logout link',
   },
   'header.label.account.menu': {
