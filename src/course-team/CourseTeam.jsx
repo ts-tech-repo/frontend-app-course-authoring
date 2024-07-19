@@ -59,7 +59,6 @@ const CourseTeam = ({ courseId }) => {
     // eslint-disable-next-line react/jsx-no-useless-fragment
     return <></>;
   }
-
   return (
     <>
       <Container size="xl" className="px-4">
