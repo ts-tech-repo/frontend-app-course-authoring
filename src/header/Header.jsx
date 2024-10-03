@@ -72,6 +72,8 @@ Header.defaultProps = {
   isHiddenMainMenu: false,
 };
 
+var mfe_config = getConfig();
 console.log(getConfig());
+console.log(getConfig().STUDIO_BASE_URL);
 
 export default injectIntl(Header);
