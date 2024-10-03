@@ -72,4 +72,6 @@ Header.defaultProps = {
   isHiddenMainMenu: false,
 };
 
+console.log(getConfig().STUDIO_BASE_URL);
+
 export default injectIntl(Header);
