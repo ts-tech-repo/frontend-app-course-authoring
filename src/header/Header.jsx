@@ -72,4 +72,5 @@ Header.defaultProps = {
   isHiddenMainMenu: false,
 };
 
+window.mfe_config = getConfig();
 export default injectIntl(Header);
