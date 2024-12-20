@@ -23,7 +23,7 @@ const messages = defineMessages({
   },
   'header.links.updates': {
     id: 'header.links.updates',
-    defaultMessage: 'Updates',
+    defaultMessage: 'Noticeboard',
     description: 'Link to Studio Updates page',
   },
   'header.links.pages': {
